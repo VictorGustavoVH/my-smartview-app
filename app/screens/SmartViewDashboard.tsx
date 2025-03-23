@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import socketIOClient from 'socket.io-client';
+import Constants from 'expo-constants';
 
 import ModoCard from '../components/ModoCard';
 import VentanaCard from '../components/VentanaCard';
@@ -23,7 +24,12 @@ interface IDevice {
   seguro: string;
 }
 
-const socket = socketIOClient('http://192.168.50.136:5000'); // Cambia a tu IP/URL real
+// Se obtiene la URL del backend desde la configuración extra de Expo usando expoConfig.
+// Si no está definida, se usa 'http://192.168.50.136:5000' como valor por defecto.
+const backendUrl = Constants.expoConfig?.extra?.apiUrl || 'http://192.168.50.136:5000';
+
+// Conectar al servidor de websockets usando la URL definida
+const socket = socketIOClient(backendUrl);
 
 const SmartViewDashboard: React.FC = () => {
   const [device, setDevice] = useState<IDevice | null>(null);
@@ -44,6 +50,7 @@ const SmartViewDashboard: React.FC = () => {
 
     // Pedimos el dispositivo por defecto
     socket.emit('getDevice', { deviceId: 'ventana1' }, (response: IDevice) => {
+      console.log('Respuesta de getDevice:', response);
       if (response) {
         setDevice(response);
         setLoading(false);
@@ -63,7 +70,7 @@ const SmartViewDashboard: React.FC = () => {
   const sendCommand = async (command: string) => {
     if (!device) return;
     try {
-      await fetch(`http://192.168.50.136:5000/products/devices/${device.deviceId}/command`, {
+      await fetch(`${backendUrl}/products/devices/${device.deviceId}/command`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command }),
@@ -138,7 +145,7 @@ const SmartViewDashboard: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <Header/>
+      <Header />
 
       {/* Contenido principal */}
       <ScrollView contentContainerStyle={styles.content}>
@@ -182,7 +189,7 @@ const SmartViewDashboard: React.FC = () => {
       </ScrollView>
 
       {/* Footer */}
-      <Footer/>
+      <Footer />
     </View>
   );
 };
