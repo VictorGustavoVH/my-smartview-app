@@ -2,6 +2,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
+import { Product } from '../types'; // Adjust the import path as necessary
 import RegisterScreen from '../screens/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CatalogScreen from '../screens/CatalogScreen';
@@ -10,14 +11,13 @@ import QuienesSomos from '../screens/BodyContent';
 import PreguntasFrecuentes from '../screens/preguntasFre';
 import SmartViewDashboard from '../screens/SmartViewDashboard';
 //import TermsScreen from '../screens/TermsScreen';
-
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Home: undefined;
   SmartView: undefined;
   Products: undefined;
-  ProductD: undefined;
+  ProductDetail: { product: Product }; // Agrega el parámetro aquí
   QuienesSomos: undefined;
   PreguntasF: undefined;
   device: undefined;
@@ -39,7 +39,11 @@ const AppNavigator = () => {
       <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Registrarse' }} />
       <Stack.Screen name="SmartView" component={SmartViewDashboard} options={{ title: 'Smart Dashboard' }} />
       <Stack.Screen name="Products" component={CatalogScreen} options={{ title: 'Catálogo' }} />
-      <Stack.Screen name="ProductD" component={ProductDetail} options={{title: 'Product Detaille'}}/>
+      <Stack.Screen 
+        name="ProductDetail" 
+        component={ProductDetail}  
+        options={{ title: 'Detalle' }}
+      />
       <Stack.Screen name="QuienesSomos" component={QuienesSomos} options={{title: 'Quienes somos'}}/>
       <Stack.Screen name="PreguntasF" component={PreguntasFrecuentes} options={{title: 'Preguntas Frecuentes'}}/>
       <Stack.Screen name="device" component={SmartViewDashboard} options={{title: 'device'}}/>
